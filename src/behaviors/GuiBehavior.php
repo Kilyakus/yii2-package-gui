@@ -8,7 +8,7 @@ class GuiBehavior extends \yii\base\Behavior
 {
     public $model;
 
-    public $root;
+    public $isRoot;
 
     public $identity;
 
@@ -46,8 +46,12 @@ class GuiBehavior extends \yii\base\Behavior
                 ['status' => $modelClass::STATUS_UPLOADED]
             ]);
 
-        if($this->root && $this->identity){
+        if(!$this->isRoot && $this->identity){
             $dataProvider->query->andFilterWhere(['created_by' => $this->identity]);
+        }
+
+        if($this->isRoot){
+            $dataProvider->query->andFilterWhere(['status' => $modelClass::STATUS_OFF]);
         }
 
         $dataProvider->pagination = false;
@@ -56,11 +60,11 @@ class GuiBehavior extends \yii\base\Behavior
 
             foreach ($dataProvider->query->all() as $photo) {
                 $photo->item_id = $this->owner->primaryKey;
-                // if($this->root){
-                //     $photo->status = $modelClass::STATUS_ON;
-                // }else{
+                if($this->isRoot){
+                    $photo->status = $modelClass::STATUS_ON;
+                }else{
                     $photo->status = $modelClass::STATUS_OFF;
-                // }
+                }
                 
                 $photo->update();
             }
