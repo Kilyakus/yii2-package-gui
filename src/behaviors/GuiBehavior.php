@@ -6,9 +6,11 @@ use yii\db\ActiveRecord;
 
 class GuiBehavior extends \yii\base\Behavior
 {
+    public $model;
+
     public $root;
 
-    public $className;
+    public $identity;
 
     public function events()
     {
@@ -31,27 +33,34 @@ class GuiBehavior extends \yii\base\Behavior
 
     public function afterUpload()
     {
-        if(Yii::$app->request->post('Photo')){
+        $modelClass = $this->model;
 
-            $className = $this->className;
+        $searchModel  = \Yii::createObject($modelClass);
+        $dataProvider = $searchModel->search(\Yii::$app->request->get());
+        $dataProvider->query
+            ->andFilterWhere(['class' => $this->owner::className()])
+            ->andFilterWhere([
+                'or',
+                ['is', 'item_id', new \yii\db\Expression('null')],
+                ['item_id' => '0'],
+                ['status' => $modelClass::STATUS_UPLOADED]
+            ]);
 
-            $photos = $className::find()->where([
-                'and',
-                ['class' => $this->owner::className()],
-                [
-                    'or',
-                    ['item_id' => '0'],
-                    ['status' => $className::STATUS_UPLOADED],
-                ]
-            ])->all();
+        if($this->root && $this->identity){
+            $dataProvider->query->andFilterWhere(['created_by' => $this->identity]);
+        }
 
-            foreach ($photos as $photo) {
+        $dataProvider->pagination = false;
+
+        if(Yii::$app->request->post((new \ReflectionClass($modelClass))->getShortName()) || $dataProvider->query->count()){
+
+            foreach ($dataProvider->query->all() as $photo) {
                 $photo->item_id = $this->owner->primaryKey;
-                if($root){
-                    $photo->status = $className::STATUS_ON;
-                }else{
-                    $photo->status = $className::STATUS_OFF;
-                }
+                // if($this->root){
+                //     $photo->status = $modelClass::STATUS_ON;
+                // }else{
+                    $photo->status = $modelClass::STATUS_OFF;
+                // }
                 
                 $photo->update();
             }

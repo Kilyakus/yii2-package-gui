@@ -14,20 +14,20 @@ class ChangeAction extends Action
     {
         $success = null;
 
-        if(!($className = $this->model)){
+        if(!($modelClass = $this->model)){
 
             $this->error = Yii::t('easyii', 'Action property `model` is empty');
 
         }else{
 
-            if(($model = $className::findOne($id)))
+            if(($model = $modelClass::findOne($id)))
             {
                 $oldImage = $model->image;
 
                 $model->image = UploadedFile::getInstance($model, 'image');
 
                 if($model->image && $model->validate(['image'])){
-                    $model->image = Image::upload($model->image, 'photos', $className::PHOTO_MAX_WIDTH);
+                    $model->image = Image::upload($model->image, 'photos', $modelClass::PHOTO_MAX_WIDTH);
                     if($model->image){
                         if($model->save()){
                             @unlink(Yii::getAlias('@webroot').$oldImage);
@@ -36,7 +36,7 @@ class ChangeAction extends Action
                                 'message' => Yii::t('easyii', 'Photo uploaded'),
                                 'photo' => [
                                     'image' => $model->image,
-                                    'thumb' => Image::thumb($model->image, $className::PHOTO_THUMB_WIDTH, $className::PHOTO_THUMB_HEIGHT)
+                                    'thumb' => Image::thumb($model->image, $modelClass::PHOTO_THUMB_WIDTH, $modelClass::PHOTO_THUMB_HEIGHT)
                                 ]
                             ];
                         }

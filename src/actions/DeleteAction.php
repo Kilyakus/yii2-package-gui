@@ -10,9 +10,9 @@ class DeleteAction extends Action
 
     public function run($id)
     {
-        $className = $this->model;
+        $modelClass = $this->model;
 
-        if(($model = $className::findOne($id))){
+        if(($model = $modelClass::findOne($id))){
             $model->delete();
         } else {
             $this->error = Yii::t('easyii', 'Not found');

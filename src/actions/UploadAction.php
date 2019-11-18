@@ -14,13 +14,13 @@ class UploadAction extends Action
     {
         $success = null;
 
-        if(!($className = $this->model)){
+        if(!($modelClass = $this->model)){
 
             $this->error = Yii::t('easyii', 'Action property `model` is empty');
 
         }else{
 
-            $model = new $className;
+            $model = new $modelClass;
             $model->class = $class;
             if($item_id){
                 $model->item_id = $item_id;
@@ -28,7 +28,7 @@ class UploadAction extends Action
             $model->image = UploadedFile::getInstance($model, 'image');
 
             if($model->image && $model->validate(['image'])){
-                $model->image = Image::upload($model->image, 'photos', $className::PHOTO_MAX_WIDTH);
+                $model->image = Image::upload($model->image, 'photos', $modelClass::PHOTO_MAX_WIDTH);
 
                 if($model->image){
                     if($model->save()){
@@ -37,9 +37,9 @@ class UploadAction extends Action
                             'photo' => [
                                 'id' => $model->primaryKey,
                                 'image' => $model->image,
-                                'thumb' => Image::thumb($model->image, $className::PHOTO_THUMB_WIDTH, $className::PHOTO_THUMB_HEIGHT),
+                                'thumb' => Image::thumb($model->image, $modelClass::PHOTO_THUMB_WIDTH, $modelClass::PHOTO_THUMB_HEIGHT),
                                 'description' => '',
-                                'status' => $className::status($model),
+                                'status' => $modelClass::status($model),
                             ]
                         ];
                     }
