@@ -37,28 +37,34 @@ class GuiBehavior extends \yii\base\Behavior
 
         $searchModel  = \Yii::createObject($modelClass);
         $dataProvider = $searchModel->search(\Yii::$app->request->get());
-        $dataProvider->query
-            ->andFilterWhere(['class' => $this->owner::className()])
-            ->andFilterWhere([
+
+        $query = [
+            'and',
+            ['class' => $this->owner::className()],
+            [
                 'or',
                 ['is', 'item_id', new \yii\db\Expression('null')],
                 ['item_id' => '0'],
-                ['status' => $modelClass::STATUS_UPLOADED]
-            ]);
+                ['item_id' => $this->owner->primaryKey],
+                ['status' => $modelClass::STATUS_UPLOADED],
+            ]
+        ];
+
+        $dataProvider->query->andFilterWhere($query);
+
+        if($this->isRoot && $this->owner->primaryKey){
+            $dataProvider->query->andFilterWhere(['in', 'status', [$modelClass::STATUS_OFF,$modelClass::STATUS_UPLOADED]]);
+        }
 
         if(!$this->isRoot && $this->identity){
             $dataProvider->query->andFilterWhere(['created_by' => $this->identity]);
-        }
-
-        if($this->isRoot){
-            $dataProvider->query->andFilterWhere(['status' => $modelClass::STATUS_OFF]);
         }
 
         $dataProvider->pagination = false;
 
         if(Yii::$app->request->post((new \ReflectionClass($modelClass))->getShortName()) || $dataProvider->query->count()){
 
-            foreach ($dataProvider->query->all() as $photo) {
+            foreach ($dataProvider->getModels() as $photo) {
                 $photo->item_id = $this->owner->primaryKey;
                 if($this->isRoot){
                     $photo->status = $modelClass::STATUS_ON;
