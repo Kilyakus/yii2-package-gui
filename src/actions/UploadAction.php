@@ -19,16 +19,28 @@ class UploadAction extends Action
             $this->error = Yii::t('easyii', 'Action property `model` is empty');
 
         }else{
-
             $model = new $modelClass;
             $model->class = $class;
             if($item_id){
                 $model->item_id = $item_id;
             }
-            $model->image = UploadedFile::getInstance($model, 'image');
+            $post = Yii::$app->request->post('Photo');
+
+            if($file = $post['link']){
+
+                $model->image = Image::copyImage($file, 'copy');
+
+            }else{
+            
+                $model->image = UploadedFile::getInstance($model, 'image');
+
+            }
 
             if($model->image && $model->validate(['image'])){
-                $model->image = Image::upload($model->image, 'photos', $modelClass::PHOTO_MAX_WIDTH);
+
+                if(!is_string($model->image)){
+                    $model->image = Image::upload($model->image, 'photos', $modelClass::PHOTO_MAX_WIDTH);
+                }
 
                 if($model->image){
                     if($model->save()){
