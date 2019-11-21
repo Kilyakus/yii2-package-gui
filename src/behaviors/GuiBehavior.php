@@ -38,6 +38,8 @@ class GuiBehavior extends \yii\base\Behavior
         $searchModel  = \Yii::createObject($modelClass);
         $dataProvider = $searchModel->search(\Yii::$app->request->get());
 
+        $updateDisabled = $this->isRoot && $this->owner->primaryKey;
+
         $query = [
             'and',
             ['class' => $this->owner::className()],
@@ -46,15 +48,11 @@ class GuiBehavior extends \yii\base\Behavior
                 ['is', 'item_id', new \yii\db\Expression('null')],
                 ['item_id' => '0'],
                 ['item_id' => $this->owner->primaryKey],
-                ['status' => $modelClass::STATUS_UPLOADED],
+                ['status' => $updateDisabled ? [$modelClass::STATUS_OFF,$modelClass::STATUS_UPLOADED] : $modelClass::STATUS_UPLOADED],
             ]
         ];
 
         $dataProvider->query->andFilterWhere($query);
-
-        if($this->isRoot && $this->owner->primaryKey){
-            $dataProvider->query->andFilterWhere(['in', 'status', [$modelClass::STATUS_OFF,$modelClass::STATUS_UPLOADED]]);
-        }
 
         if(!$this->isRoot && $this->identity){
             $dataProvider->query->andFilterWhere(['created_by' => $this->identity]);
@@ -64,15 +62,15 @@ class GuiBehavior extends \yii\base\Behavior
 
         if(Yii::$app->request->post((new \ReflectionClass($modelClass))->getShortName()) || $dataProvider->query->count()){
 
-            foreach ($dataProvider->getModels() as $photo) {
-                $photo->item_id = $this->owner->primaryKey;
+            foreach ($dataProvider->getModels() as $model) {
+                $model->item_id = $this->owner->primaryKey;
                 if($this->isRoot){
-                    $photo->status = $modelClass::STATUS_ON;
+                    $model->status = $modelClass::STATUS_ON;
                 }else{
-                    $photo->status = $modelClass::STATUS_OFF;
+                    $model->status = $modelClass::STATUS_OFF;
                 }
                 
-                $photo->update();
+                $model->update();
             }
 
         }
@@ -80,8 +78,8 @@ class GuiBehavior extends \yii\base\Behavior
 
     public function afterDelete()
     {
-        $className = $this->className;
+        $modelClass = $this->model;
 
-        $className::deleteAll(['class' => $this->owner::className(), 'item_id' => $this->owner->primaryKey]);
+        $modelClass::deleteAll(['class' => $this->owner::modelClass(), 'item_id' => $this->owner->primaryKey]);
     }
 }
