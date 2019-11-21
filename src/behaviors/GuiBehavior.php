@@ -38,7 +38,7 @@ class GuiBehavior extends \yii\base\Behavior
         $searchModel  = \Yii::createObject($modelClass);
         $dataProvider = $searchModel->search(\Yii::$app->request->get());
 
-        $updateDisabled = $this->isRoot && $this->owner->primaryKey;
+        // $updateDisabled = $this->isRoot && $this->owner->primaryKey;
 
         $query = [
             'and',
@@ -48,7 +48,8 @@ class GuiBehavior extends \yii\base\Behavior
                 ['is', 'item_id', new \yii\db\Expression('null')],
                 ['item_id' => '0'],
                 ['item_id' => $this->owner->primaryKey],
-                ['status' => $updateDisabled ? [$modelClass::STATUS_OFF,$modelClass::STATUS_UPLOADED] : $modelClass::STATUS_UPLOADED],
+                // ['status' => $updateDisabled ? [$modelClass::STATUS_OFF,$modelClass::STATUS_UPLOADED] : $modelClass::STATUS_UPLOADED],
+                ['status' => $modelClass::STATUS_UPLOADED],
             ]
         ];
 
@@ -80,6 +81,6 @@ class GuiBehavior extends \yii\base\Behavior
     {
         $modelClass = $this->model;
 
-        $modelClass::deleteAll(['class' => $this->owner::modelClass(), 'item_id' => $this->owner->primaryKey]);
+        $modelClass::deleteAll(['class' => $this->owner::className(), 'item_id' => $this->owner->primaryKey]);
     }
 }
