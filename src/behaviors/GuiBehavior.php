@@ -43,14 +43,14 @@ class GuiBehavior extends \yii\base\Behavior
         $query = [
             'and',
             ['class' => $this->owner::className()],
+            // ['status' => $updateDisabled ? [$modelClass::STATUS_OFF,$modelClass::STATUS_UPLOADED] : $modelClass::STATUS_UPLOADED],
+            ['status' => $modelClass::STATUS_UPLOADED],
             [
                 'or',
                 ['is', 'item_id', new \yii\db\Expression('null')],
                 ['item_id' => '0'],
                 ['item_id' => $this->owner->primaryKey],
-                // ['status' => $updateDisabled ? [$modelClass::STATUS_OFF,$modelClass::STATUS_UPLOADED] : $modelClass::STATUS_UPLOADED],
-                ['status' => $modelClass::STATUS_UPLOADED],
-            ]
+            ],
         ];
 
         $dataProvider->query->andFilterWhere($query);
@@ -61,17 +61,22 @@ class GuiBehavior extends \yii\base\Behavior
 
         $dataProvider->pagination = false;
 
-        if(Yii::$app->request->post((new \ReflectionClass($modelClass))->getShortName()) || $dataProvider->query->count()){
+        if(
+            Yii::$app->request->post((new \ReflectionClass($modelClass))->getShortName()) && $dataProvider->query->count() || 
+            Yii::$app->request->post() && $this->owner->primaryKey && $dataProvider->query->count()){
 
-            foreach ($dataProvider->getModels() as $model) {
-                $model->item_id = $this->owner->primaryKey;
-                if($this->isRoot){
-                    $model->status = $modelClass::STATUS_ON;
-                }else{
-                    $model->status = $modelClass::STATUS_OFF;
+            if($this->owner->primaryKey){
+
+                foreach ($dataProvider->getModels() as $model) {
+                    $model->item_id = $this->owner->primaryKey;
+                    if($this->isRoot){
+                        $model->status = $modelClass::STATUS_ON;
+                    }else{
+                        $model->status = $modelClass::STATUS_OFF;
+                    }
+                    $model->update();
                 }
-                
-                $model->update();
+
             }
 
         }
