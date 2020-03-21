@@ -34,6 +34,7 @@ class GuiBehavior extends \yii\base\Behavior
     public function afterUpload()
     {
         $modelClass = $this->model;
+        $ownerClass = $this->owner;
 
         $searchModel  = \Yii::createObject($modelClass);
         $dataProvider = $searchModel->search(\Yii::$app->request->get());
@@ -42,7 +43,7 @@ class GuiBehavior extends \yii\base\Behavior
 
         $query = [
             'and',
-            ['class' => $this->owner::className()],
+            ['class' => $ownerClass::className()],
             // ['status' => $updateDisabled ? [$modelClass::STATUS_OFF,$modelClass::STATUS_UPLOADED] : $modelClass::STATUS_UPLOADED],
             ['status' => $modelClass::STATUS_UPLOADED],
             [
@@ -85,7 +86,8 @@ class GuiBehavior extends \yii\base\Behavior
     public function afterDelete()
     {
         $modelClass = $this->model;
+        $ownerClass = $this->owner;
 
-        $modelClass::deleteAll(['class' => $this->owner::className(), 'item_id' => $this->owner->primaryKey]);
+        $modelClass::deleteAll(['class' => $ownerClass::className(), 'item_id' => $this->owner->primaryKey]);
     }
 }
