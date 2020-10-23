@@ -4,7 +4,7 @@ namespace kilyakus\package\gui\actions;
 use Yii;
 use yii\web\UploadedFile;
 use kilyakus\action\BaseAction as Action;
-use kilyakus\imageprocessor\Image;
+use kilyakus\helper\media\Image;
 
 class ChangeAction extends Action
 {

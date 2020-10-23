@@ -6,88 +6,78 @@ use yii\db\ActiveRecord;
 
 class GuiBehavior extends \yii\base\Behavior
 {
-    public $model;
+	public $model;
 
-    public $isRoot;
+	public $isRoot;
 
-    public $identity;
+	public $identity;
 
-    public function events()
-    {
-        return [
-            ActiveRecord::EVENT_AFTER_INSERT => 'afterInsert',
-            ActiveRecord::EVENT_AFTER_UPDATE => 'afterUpdate',
-            ActiveRecord::EVENT_AFTER_DELETE => 'afterDelete',
-        ];
-    }
+	public function events()
+	{
+		return [
+			ActiveRecord::EVENT_AFTER_INSERT => 'afterUpload',
+			ActiveRecord::EVENT_AFTER_UPDATE => 'afterUpload',
+			ActiveRecord::EVENT_AFTER_DELETE => 'afterDelete',
+		];
+	}
 
-    public function afterInsert()
-    {
-        self::afterUpload();
-    }
+	public function afterUpload()
+	{
+		$modelClass = $this->model;
+		$ownerClass = $this->owner;
 
-    public function afterUpdate()
-    {
-        self::afterUpload();
-    }
+		$searchModel  = \Yii::createObject($modelClass);
+		$dataProvider = $searchModel->search(\Yii::$app->request->get());
 
-    public function afterUpload()
-    {
-        $modelClass = $this->model;
-        $ownerClass = $this->owner;
+		// $updateDisabled = $this->isRoot && $this->owner->primaryKey;
 
-        $searchModel  = \Yii::createObject($modelClass);
-        $dataProvider = $searchModel->search(\Yii::$app->request->get());
+		$query = [
+			'and',
+			['class' => $ownerClass::className()],
+			// ['status' => $updateDisabled ? [$modelClass::STATUS_OFF,$modelClass::STATUS_UPLOADED] : $modelClass::STATUS_UPLOADED],
+			// ['status' => $modelClass::STATUS_UPLOADED],
+			[
+				'or',
+				['is', 'item_id', new \yii\db\Expression('null')],
+				['item_id' => '0'],
+				['item_id' => $this->owner->primaryKey],
+			],
+		];
 
-        // $updateDisabled = $this->isRoot && $this->owner->primaryKey;
+		$dataProvider->query->andFilterWhere($query);
 
-        $query = [
-            'and',
-            ['class' => $ownerClass::className()],
-            // ['status' => $updateDisabled ? [$modelClass::STATUS_OFF,$modelClass::STATUS_UPLOADED] : $modelClass::STATUS_UPLOADED],
-            ['status' => $modelClass::STATUS_UPLOADED],
-            [
-                'or',
-                ['is', 'item_id', new \yii\db\Expression('null')],
-                ['item_id' => '0'],
-                ['item_id' => $this->owner->primaryKey],
-            ],
-        ];
+		if(!$this->isRoot && $this->identity){
+			$dataProvider->query->andFilterWhere(['created_by' => $this->identity]);
+		}
 
-        $dataProvider->query->andFilterWhere($query);
+		$dataProvider->pagination = false;
 
-        if(!$this->isRoot && $this->identity){
-            $dataProvider->query->andFilterWhere(['created_by' => $this->identity]);
-        }
+		if(
+			Yii::$app->request->post((new \ReflectionClass($modelClass))->getShortName()) && $dataProvider->query->count() || 
+			Yii::$app->request->post() && $this->owner->primaryKey && $dataProvider->query->count()){
 
-        $dataProvider->pagination = false;
+			if($this->owner->primaryKey){
 
-        if(
-            Yii::$app->request->post((new \ReflectionClass($modelClass))->getShortName()) && $dataProvider->query->count() || 
-            Yii::$app->request->post() && $this->owner->primaryKey && $dataProvider->query->count()){
+				foreach ($dataProvider->getModels() as $model) {
+					$model->item_id = $this->owner->primaryKey;
+					if($this->isRoot){
+						$model->status = $modelClass::STATUS_ON;
+					}else{
+						$model->status = $modelClass::STATUS_OFF;
+					}
+					$model->update();
+				}
 
-            if($this->owner->primaryKey){
+			}
 
-                foreach ($dataProvider->getModels() as $model) {
-                    $model->item_id = $this->owner->primaryKey;
-                    if($this->isRoot){
-                        $model->status = $modelClass::STATUS_ON;
-                    }else{
-                        $model->status = $modelClass::STATUS_OFF;
-                    }
-                    $model->update();
-                }
+		}
+	}
 
-            }
+	public function afterDelete()
+	{
+		$modelClass = $this->model;
+		$ownerClass = $this->owner;
 
-        }
-    }
-
-    public function afterDelete()
-    {
-        $modelClass = $this->model;
-        $ownerClass = $this->owner;
-
-        $modelClass::deleteAll(['class' => $ownerClass::className(), 'item_id' => $this->owner->primaryKey]);
-    }
+		$modelClass::deleteAll(['class' => $ownerClass::className(), 'item_id' => $this->owner->primaryKey]);
+	}
 }
