@@ -1,0 +1,153 @@
+.gui-widget .ui-dialog-titlebar h2 {margin-bottom:0.4rem;}
+.gui-widget .ui-dialog-titlebar p {margin:0;}
+.gui-widget .ui-widget-body .btn.btn-secondary {border-style:dashed;}
+
+.gui-widget .ui-widget-body:before,
+.gui-widget .ui-widget-body:after {content:'';position:absolute;z-index:1;}
+.gui-widget .ui-widget-body:before {width:100%;height:100%;top:0;left:-9999px;background:transparent;transition:background 0.9s;}
+
+.gui-widget .ui-widget-body input[type=text],
+.gui-widget .ui-widget-body button,
+.gui-widget .ui-widget-body .gui-strip {position:relative;z-index:0;transition:all 0.3s;}
+
+.gui-widget .gui-preloader:before {left:0;background:url('../img/overlay.png'), rgba(226,229,236,0.8);opacity:0.4;}
+.gui-widget .gui-preloader:after {width:36px;height:36px;left:0;right:0;bottom:0;top:-20px;margin:auto;border-radius:50%;background-color:transparent;border:2px solid rgba(0,0,0,0.25);border-top:2px solid #222;-webkit-animation:1s gui-preloader linear infinite;animation: 1s gui-preloader linear infinite;}
+
+.gui-widget .gui-preloader input,
+.gui-widget .gui-preloader button,
+.gui-widget .gui-preloader .gui-strip {opacity:0.3;filter:blur(2px);}
+
+.gui-widget				.gui-uploading-text small {display:none;}
+.gui-widget				.gui-uploading-text span {position:absolute;}
+.gui-widget .gui-preloader .gui-uploading-text {position:absolute;width:0;height:0;padding-top:30px;margin:auto;top:0;left:0;right:0;bottom:0;z-index:1;display:flex;justify-content:center;white-space:nowrap;}
+.gui-widget .gui-preloader .gui-uploading-text small {display:block;}
+
+.gui-widget .gui-strip {position:relative;margin-top:15px;margin-bottom:15px;overflow:hidden;text-align:center;}
+.gui-widget .gui-strip span {position:relative;padding:0 15px;}
+.gui-widget .gui-strip span:before,
+.gui-widget .gui-strip span:after {content:'';position:absolute;width:100vh;height:1px;top:50%;border-top:1px solid #ebedf2;}
+.gui-widget .gui-strip span:before {right:100%;}
+.gui-widget .gui-strip span:after {left:100%;}
+
+.gui-widget .gui-link {position:relative;display:flex;flex-wrap:wrap;align-items:stretch;width:100%;}
+.gui-widget .gui-link input,
+.gui-widget .gui-link button {position:relative;float:left;background:white;border:1px solid #ebedf2;padding:0.65rem 1rem;line-height:1.5;border-radius:0.2rem;transition:color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;}
+.gui-widget .gui-link button {display:none;}
+.gui-widget .gui-link.confirmed button {display:block;}
+.gui-widget .gui-link > input {position:relative;flex:1 1 auto;width:1%;margin-bottom:0;}
+	.gui-widget .gui-link > input + input,
+	.gui-widget .gui-link > input + button,
+	.gui-widget .gui-link > button + input,
+	.gui-widget .gui-link > button + button {margin-left:-1px;}
+.gui-widget .gui-link > input:focus,
+.gui-widget .gui-link > button:focus {z-index:4;}
+.gui-widget .gui-link > input:not(:last-child),
+.gui-widget .gui-link > button:not(:last-child) {border-top-right-radius:0;border-bottom-right-radius:0;}
+.gui-widget .gui-link > input:not(:first-child),
+.gui-widget .gui-link > button:not(:first-child) {border-top-left-radius:0;border-bottom-left-radius:0;}
+
+.gui-widget .gui-link .photo-preview {position:absolute;width:0px;bottom:100%;}
+.gui-widget .gui-link .photo-preview img {width:180px;padding:5px;background:#FFF;box-shadow:0 0 13px rgba(0,0,0,0.15);}
+
+.gui-widget .gui-sortable {display:flex;flex-wrap:wrap;width:100%;min-height:160px;border:1px dashed #aaa!important;border-radius:5px;padding:5px!important;}
+.gui-widget .gui-sortable > li {margin:0px!important;padding:0px!important;border-width:0!important;border-radius:6px;float:left;background:transparent;}
+.gui-widget .gui-sortable > li:hover {background-color:transparent;}
+.gui-widget .gui-sortable > li:hover .preview-pane .preview-image {opacity:1;}
+.gui-widget .gui-sortable > li.sortable-placeholder {border-width:1px!important;}
+.gui-widget .gui-sortable > li > div:hover {background:#f4f5f8;}
+.gui-widget .gui-sortable > li[draggable=true] {border-color:transparent!important;}
+
+.gui-widget .gui-sortable > li > div.gui-item {height:100%;/*background-color:transparent;*/border-radius:4px;}
+.gui-widget .gui-sortable > li > div.gui-item .gui-spacing {display:flex;position:relative;height:100%;border-radius:5px;}
+.gui-widget .gui-sortable > li > div.gui-item .gui-thumb {padding:5px;}
+.gui-widget .gui-sortable > li > div.gui-item .gui-thumb,
+.gui-widget .gui-sortable > li > div.gui-item .gui-thumb .gui-cutter-container {position:relative;}
+.gui-widget .gui-sortable > li > div.gui-item .gui-thumb .gui-cutter-details {position:absolute;width:100%;bottom:0;z-index:1;}
+.gui-widget .gui-sortable > li > div.gui-item .gui-thumb .gui-cutter-details > button {position:relative;border-left:0;border-right:0;border-bottom:0;border-radius:0;}
+.gui-widget .gui-sortable > li > div.gui-item .gui-thumb .gui-cutter-details > button:hover {border-color:rgba(255,255,255,0.3);}
+.gui-widget .gui-sortable > li > div.gui-item .gui-thumb .gui-cutter-details .gui-details-info {backdrop-filter:blur(20px);position:absolute;bottom:0;left:0;width:100%;height:0px;padding:0;overflow:hidden;color:#FFF;border-radius:5px;z-index:0;transition:height 0.3s ease-in-out;font-size:9pt;}
+.gui-widget .gui-sortable > li > div.gui-item .gui-thumb .gui-cutter-details .gui-details-info:before,
+.gui-widget .gui-sortable > li > div.gui-item .gui-thumb .gui-cutter-details .gui-details-info:after {content:'';position:absolute;width:105%;height:105%;margin:-2.5%;border-radius:5px;z-index:0;}
+.gui-widget .gui-sortable > li > div.gui-item .gui-thumb .gui-cutter-details .gui-details-info:before {background-image:var(--preview-image);background-position:bottom;background-origin:content-box;padding:2.5%;filter:blur(10px);}
+.gui-widget .gui-sortable > li > div.gui-item .gui-thumb .gui-cutter-details .gui-details-info:after {top:0;background-color:rgb(41 134 255 / 0.3);box-shadow:inset 0 0 15px rgba(255, 255, 255, 0.3);}
+.gui-widget .gui-sortable > li > div.gui-item .gui-thumb .gui-cutter-details .gui-details-info .mCustomScrollbar {position:relative;width:100%;height:100%;z-index:10;
+	-webkit-mask-image:-webkit-gradient(
+		linear,
+		right top,
+		right bottom,
+		color-stop(0.75,rgba(41,134,255,1)),
+		color-stop(0.85,rgba(41,134,255,0)),
+		color-stop(1.00,rgba(0,0,0,0.15))
+	)
+}
+.gui-widget .gui-sortable > li > div.gui-item .gui-thumb .gui-cutter-details .gui-details-info .mCSB_inside > .mCSB_container {padding-top:15px;padding-right:60px;padding-bottom:40px;padding-left:15px;}
+.gui-widget .gui-sortable > li > div.gui-item .gui-thumb .gui-cutter-details .gui-details-info .mCSB_scrollTools_vertical {margin-top:15px;margin-bottom:40px;left:0px;}
+.gui-widget .gui-sortable > li > div.gui-item .gui-thumb .gui-cutter-details:hover .gui-details-info {height:190px;}
+.gui-widget .gui-sortable > li > div.gui-item .gui-thumb > a,
+.gui-widget .gui-sortable > li > div.gui-item .gui-thumb > a img {width:100%;height:100%;}
+.gui-widget .gui-sortable > li > div.gui-item .gui-thumb .btn-group {position:absolute;right:0;top:0;margin:10px;z-index:10;}
+.gui-widget .gui-sortable > li > div.gui-item .gui-thumb .btn-group > .btn {width:35px;height:35px;padding:5px 0;border:0;background-color:rgba(0,0,0,0.7);color:#dadada;}
+.gui-widget .gui-sortable > li > div.gui-item .gui-thumb .btn-group > .btn:hover {background-color:rgba(0,0,0,0.4);}
+.gui-widget .gui-sortable > li > div.gui-item .gui-info {padding-left:0;}
+.gui-widget .gui-sortable > li > div.gui-item .gui-info .form-control {margin-bottom:10px;}
+.gui-widget .gui-sortable > li > div.gui-item .gui-info .photo-description {height:65px!important;}
+
+.gui-widget .gui-sortable.photo-grid > li {width:20%;}
+.gui-widget .gui-sortable.photo-grid > li .gui-thumb {width:100%;}
+.gui-widget .gui-sortable.photo-grid > li .gui-info {position:absolute;top:-0%;height:0;overflow:hidden;z-index:100;border-radius:10px;background-color:#FFF;box-shadow:0 0px 15px rgba(0,0,0,0.3);opacity:0;transition:top 0.3s, opacity 0.3s;}
+.gui-widget .gui-sortable.photo-grid > li .gui-info.active {height:auto;top:50%;opacity:1;}
+.gui-widget .gui-sortable.photo-grid .btn.gui-upload-button {width:100%;height:100%;margin:0px;white-space:normal;background:#DBE3F0;color:#808080;}
+
+.gui-widget .gui-sortable.photo-grid > li > div.gui-item .gui-spacing {flex-direction:column;align-items:center;}
+.gui-widget .gui-sortable.photo-grid > li > div.gui-item .gui-info {width:100%;min-width:300px;}
+.gui-widget .gui-sortable.photo-grid > li > div.gui-item .gui-header,
+.gui-widget .gui-sortable.photo-grid > li > div.gui-item .gui-body,
+.gui-widget .gui-sortable.photo-grid > li > div.gui-item .gui-footer {padding:10px;}
+.gui-widget .gui-sortable.photo-grid > li > div.gui-item .gui-body {background-color:#111;color:#FFF;}
+.gui-widget .gui-sortable.photo-grid > li > div.gui-item .gui-body input,
+.gui-widget .gui-sortable.photo-grid > li > div.gui-item .gui-body textarea,
+.gui-widget .gui-sortable.photo-grid > li > div.gui-item .gui-body select {background-color:#252525;border-color:#303030;color:#FFF;}
+.gui-widget .gui-sortable.photo-grid > li > div.gui-item .gui-body label {margin-bottom:0;}
+
+/*.gui-widget .gui-sortable.photo-grid > li > div.gui-item img {transition:filter 0.3s ease-in-out;}
+.gui-widget .gui-sortable.photo-grid > li:hover > div.gui-item img {filter:blur(5px);}*/
+
+.gui-widget .gui-sortable.photo-list > li {width:100%;}
+.gui-widget .gui-sortable.photo-list > li > div.gui-item .gui-thumb {width:20%;}
+.gui-widget .gui-sortable.photo-list > li > div.gui-item .gui-thumb .photo-info-panel {display:none;}
+.gui-widget .gui-sortable.photo-list > li > div.gui-item .gui-info {width:80%;padding:5px;}
+.gui-widget .gui-sortable.photo-list > li > div.gui-item .gui-header {display:none;}
+
+.gui-widget .gui-toggle {display:flex;flex-flow:row nowrap;float:right;}
+.gui-widget .gui-toggle input {display:none;}
+.gui-widget .gui-toggle input + label {position:relative;height:41px;margin:0;float:left;padding:0.8rem 1.1rem;font-size:0.875rem;line-height:1.5;background:white;border:1px solid #ebedf2;border-radius:0.2rem;transition:color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;}
+.gui-widget .gui-toggle input + label:first-of-type {border-radius: 6px 0 0 6px;border-right: none;}
+.gui-widget .gui-toggle input + label:last-of-type {border-radius: 0 6px 6px 0;border-left: none;}
+.gui-widget .gui-toggle input:checked + label,
+.gui-widget .gui-toggle input:focus + label {color: #595d6e;z-index:1;box-shadow:inset 0 3px 5px rgba(0, 0, 0, 0.125);}
+@media (max-width:823px) {
+	.gui-widget .gui-toggle input + label {padding:1.25rem 1.55rem;flex:0 0 50%;display:flex;justify-content:center;align-items:center;}
+}
+
+@keyframes gui-preloader{
+	from{-webkit-transform:rotate(0deg);transform:rotate(0deg);}
+	to{-webkit-transform:rotate(360deg);transform:rotate(360deg);}
+}
+
+.gui-widget .gui-sortable > li > div.gui-item .plugin-box {width:100%;}
+
+@media(max-width:823px){
+	.gui-widget .gui-sortable.photo-grid > li {width:100%;}
+
+	.gui-widget .gui-sortable.photo-list > li > div.gui-item .gui-spacing {flex-direction:column;}
+	.gui-widget .gui-sortable.photo-list > li > div.gui-item .gui-thumb,
+	.gui-widget .gui-sortable.photo-list > li > div.gui-item .gui-info {width:100%;}
+}
+
+/* Заметки на будущее:
+	
+	Создать общий класс .gui-btn
+	Добавить классы размерности sm, md(default), lg
+	отделить от бутстрапа gui-upload-button и аналогичные элементы
+
+*/

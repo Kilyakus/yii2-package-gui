@@ -10,6 +10,8 @@ class ChangeAction extends Action
 {
     public $model;
 
+    public $basePath = 'photos';
+
     public function run($id)
     {
         $success = null;
@@ -27,7 +29,7 @@ class ChangeAction extends Action
                 $model->image = UploadedFile::getInstance($model, 'image');
 
                 if($model->image && $model->validate(['image'])){
-                    $model->image = Image::upload($model->image, 'photos', $modelClass::PHOTO_MAX_WIDTH);
+                    $model->image = Image::upload($model->image, $this->basePath . '/' . Yii::$app->user->identity->id, $modelClass::PHOTO_MAX_WIDTH);
                     if($model->image){
                         if($model->save()){
                             @unlink(Yii::getAlias('@webroot').$oldImage);

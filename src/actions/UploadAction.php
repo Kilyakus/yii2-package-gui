@@ -38,7 +38,7 @@ class UploadAction extends Action
 				$model->image = Image::copyImage($file, 'copy');
 
 			}else{
-			
+
 				$model->image = UploadedFile::getInstance($model, 'image');
 
 			}
@@ -57,28 +57,26 @@ class UploadAction extends Action
 				}else{
 					$model->author = Yii::$app->user->identity->name;
 				}
-		}
+			}
 
-			if($src = $post['author_src']){
+			if($src = $post['author_src'])
+			{
 				$model->author_src = $post['author_src'];
 			}
 
-			if($model->image && $model->validate(['image'])){
-
+			if($model->image && $model->validate(['image']))
+			{
 				if(!is_string($model->image)){
-					$model->image = Image::upload($model->image, $this->basePath, $modelClass::PHOTO_MAX_WIDTH);
+					$model->image = Image::upload($model->image, $this->basePath . '/' . Yii::$app->user->identity->id, $modelClass::PHOTO_MAX_WIDTH);
 				}
 
 				if($model->image){
 					if($model->save()){
-
-						if(($owner = $class::findOne($model->item_id)) && isset($owner->{$this->ownerAttribute}))
+						$owner = $class::findOne($model->item_id);
+						if(($owner = $class::findOne($model->item_id)) && empty($owner->{$this->ownerAttribute}))
 						{
-							// var_dump($owner->{$this->ownerAttribute});die;
-							if(empty($owner->{$this->ownerAttribute})){
-								$owner->{$this->ownerAttribute} = $model->image;
-								$owner->update();
-							}
+							$owner->{$this->ownerAttribute} = $model->image;
+							$owner->update();
 						}
 
 						$success = [

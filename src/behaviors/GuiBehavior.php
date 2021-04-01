@@ -56,16 +56,18 @@ class GuiBehavior extends \yii\base\Behavior
 			Yii::$app->request->post((new \ReflectionClass($modelClass))->getShortName()) && $dataProvider->query->count() || 
 			Yii::$app->request->post() && $this->owner->primaryKey && $dataProvider->query->count()){
 
-			if($this->owner->primaryKey){
-
-				foreach ($dataProvider->getModels() as $model) {
-					$model->item_id = $this->owner->primaryKey;
-					if($this->isRoot){
-						$model->status = $modelClass::STATUS_ON;
-					}else{
-						$model->status = $modelClass::STATUS_OFF;
-					}
-					$model->update();
+			if($this->owner->primaryKey)
+			{
+				foreach ($dataProvider->getModels() as $model)
+				{
+					Yii::$app->db->createCommand(
+						'UPDATE ' . $model::tableName() . ' SET item_id=:item_id, status=:status WHERE ' . $model::primaryKey()[0] . '=:id',
+						[
+							'id' => $model->primaryKey,
+							'item_id' => $this->owner->primaryKey,
+							'status' => $this->isRoot ? $modelClass::STATUS_ON : $modelClass::STATUS_OFF
+						]
+					)->execute();
 				}
 
 			}
